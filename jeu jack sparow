@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu Jack Sparrow</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #gameOutput {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jeu Jack Sparrow</h1>
+    <div id="gameOutput"></div>
+    <button onclick="startGame()">Démarrer le jeu</button>
+
+    <script src="game.js"></script>
+</body>
+</html>

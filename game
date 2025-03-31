@@ -1,0 +1,212 @@
+// Jeu inspiré de Pirates des Caraïbes pour Nintendo Switch 1
+// Le joueur incarne un jeune Jack Sparrow construisant sa réputation de pirate
+
+class JackSparrowGame {
+    constructor() {
+        this.reputation = 0;
+        this.gold = 100;
+        this.crew = [];
+        this.ship = { condition: 100, speed: 5, cannons: 2, armor: 1 }; // Attributs du navire
+        this.position = { x: 0, y: 0 }; // Position du joueur
+        this.lives = 3; // Nombre de vies
+        this.weapon = null; // Arme actuelle
+        this.lastPickedObject = null; // Dernier objet pris
+        this.objectDurability = 0; // Durabilité de l'objet
+        this.food = 10; // Quantité de nourriture
+        this.factions = { pirates: 0, navy: 0, merchants: 0 }; // Réputation des factions
+        this.islandMarket = { foodPrice: 10, repairCost: 50 }; // Prix du marché insulaire
+    }
+
+    startGame() {
+        console.log("Bienvenue dans l'univers de Jack Sparrow jeune !");
+        this.choosePath();
+    }
+
+    choosePath() {
+        console.log("Que voulez-vous faire ?");
+        console.log("1. Voler un navire");
+        console.log("2. Recruter un équipage");
+        console.log("3. Chasser un trésor");
+        console.log("4. S'engager dans un combat naval");
+        console.log("5. Diriger votre navire");
+        console.log("6. Sélectionner une arme");
+        console.log("7. Faire escale pour réparations ou provisions");
+        console.log("8. Explorer une île");
+    }
+
+    navigate(direction) {
+        let windFactor = Math.random() * 2 - 1;
+        this.position.x += (direction === "est" ? 1 : direction === "ouest" ? -1 : 0) * (this.ship.speed + windFactor);
+        this.position.y += (direction === "nord" ? 1 : direction === "sud" ? -1 : 0) * (this.ship.speed + windFactor);
+        console.log(`Vous naviguez vers le ${direction}. Position actuelle : (${this.position.x}, ${this.position.y})`);
+    }
+
+    dockAtPort() {
+        console.log("Vous faites escale. Voulez-vous :");
+        console.log("1. Réparer votre navire");
+        console.log("2. Acheter de la nourriture");
+        console.log("3. Engager des marins");
+    }
+
+    repairShip() {
+        if (this.gold >= this.islandMarket.repairCost) {
+            this.ship.condition = 100;
+            this.gold -= this.islandMarket.repairCost;
+            console.log("Votre navire est réparé !");
+        } else {
+            console.log("Vous n'avez pas assez d'or pour réparer votre navire.");
+        }
+    }
+
+    buyFood(amount) {
+        let cost = amount * this.islandMarket.foodPrice;
+        if (this.gold >= cost) {
+            this.food += amount;
+            this.gold -= cost;
+            console.log(`Vous avez acheté ${amount} rations de nourriture.`);
+        } else {
+            console.log("Pas assez d'or pour acheter de la nourriture.");
+        }
+    }
+
+    recruitCrew() {
+        if (this.gold >= 20) {
+            this.crew.push("Marin");
+            this.gold -= 20;
+            console.log("Vous avez recruté un marin !");
+        } else {
+            console.log("Pas assez d'or pour recruter un équipage.");
+        }
+    }
+
+    exploreIsland() {
+        let events = ["trésor", "ennemi", "allié", "rien"];
+        let event = events[Math.floor(Math.random() * events.length)];
+        switch (event) {
+            case "trésor":
+                let loot = Math.floor(Math.random() * 50) + 10;
+                this.gold += loot;
+                console.log(`Vous avez trouvé un trésor contenant ${loot} pièces d'or !`);
+                break;
+            case "ennemi":
+                console.log("Vous êtes attaqué par des brigands de l'île ! Préparez-vous à combattre !");
+                break;
+            case "allié":
+                console.log("Vous avez rencontré un marchand qui vous offre une remise sur ses marchandises.");
+                this.islandMarket.foodPrice -= 2;
+                break;
+            default:
+                console.log("L'île est calme, rien ne se passe.");
+        }
+    }
+
+    upgradeShip() {
+        if (this.gold >= 100) {
+            this.ship.speed += 1;
+            this.ship.cannons += 1;
+            this.ship.armor += 1;
+            this.gold -= 100;
+            console.log("Votre navire est amélioré : vitesse accrue, canons supplémentaires et coque renforcée.");
+        } else {
+            console.log("Pas assez d'or pour améliorer le navire.");
+        }
+    }
+
+    // 1. Combat au sabre et au pistolet
+    fightWithSword() {
+        console.log("Vous combattez avec votre sabre !");
+        let attackSuccess = Math.random() < 0.7;
+        if (attackSuccess) {
+            console.log("Vous avez porté un coup de sabre réussi !");
+        } else {
+            console.log("L'ennemi a esquivé votre attaque.");
+        }
+    }
+
+    reloadPistol() {
+        console.log("Vous rechargez votre pistolet...");
+        let reloadTime = 2000; // Temps de recharge
+        setTimeout(() => {
+            console.log("Le pistolet est prêt à être utilisé.");
+        }, reloadTime);
+    }
+
+    shootPistol() {
+        console.log("Vous tirez avec votre pistolet !");
+        let attackSuccess = Math.random() < 0.6;
+        if (attackSuccess) {
+            console.log("Le tir a atteint l'ennemi !");
+        } else {
+            console.log("Le tir a raté.");
+        }
+    }
+
+    // 2. Système de Mutinerie et changement de capitaine
+    startMutiny() {
+        let mutinyChance = Math.random();
+        if (mutinyChance < 0.5) {
+            console.log("Une mutinerie se déclenche ! Un membre de l'équipage vous défie en duel !");
+            let duelOutcome = Math.random();
+            if (duelOutcome < 0.5) {
+                console.log("Vous avez perdu le duel. Un nouveau capitaine prend votre place.");
+                this.reputation = 0; // Réinitialisation de la réputation
+                this.lives = 3; // Réinitialisation des vies
+            } else {
+                console.log("Vous avez remporté le duel. Vous restez capitaine.");
+            }
+        } else {
+            console.log("Aucune mutinerie n'a lieu pour l'instant.");
+        }
+    }
+
+    // 3. Destruction d'objets et éléments du navire ennemi
+    attackShipElement(element) {
+        let damage = Math.floor(Math.random() * 30) + 10;
+        if (element === "canon") {
+            console.log(`Vous avez détruit un canon ennemi, infligeant ${damage} dégâts.`);
+        } else if (element === "voile") {
+            console.log(`Vous avez détruit une voile ennemie, infligeant ${damage} dégâts.`);
+        } else if (element === "mat") {
+            console.log(`Vous avez détruit un mat ennemi, infligeant ${damage} dégâts.`);
+        } else if (element === "cabine") {
+            console.log(`Vous avez détruit la cabine du capitaine ennemi, infligeant ${damage} dégâts.`);
+        } else if (element === "rembarde") {
+            console.log(`Vous avez détruit une rembarde ennemie, infligeant ${damage} dégâts.`);
+        }
+    }
+
+    // 4. Escalade et combat via cordes entre navires
+    useRopeToBoard() {
+        console.log("Vous vous élancez avec la corde pour aborder le navire ennemi.");
+        let jumpSuccess = Math.random() < 0.8;
+        if (jumpSuccess) {
+            console.log("Vous avez réussi à atteindre le navire ennemi !");
+            this.fightOnEnemyShip();
+        } else {
+            console.log("Vous avez échoué à sauter et êtes tombé à l'eau !");
+            this.lives--;
+            if (this.lives <= 0) {
+                console.log("Vous avez perdu toutes vos vies et êtes tombé en mer !");
+                this.gameOver();
+            }
+        }
+    }
+
+    fightOnEnemyShip() {
+        console.log("Combat sur le navire ennemi !");
+        let combatOutcome = Math.random() < 0.6; // Chance de succès du combat
+        if (combatOutcome) {
+            console.log("Vous avez vaincu l'équipage ennemi et pris le contrôle du navire !");
+            // Capture du navire et récompenses ici
+        } else {
+            console.log("Vous avez été repoussé et devez retourner à votre navire.");
+        }
+    }
+
+    gameOver() {
+        console.log("Le jeu est terminé. Vous avez perdu toutes vos vies.");
+    }
+}
+
+const game = new JackSparrowGame();
+game.startGame();
